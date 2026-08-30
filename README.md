@@ -75,6 +75,10 @@ python -m src.cli . --format tree
 
 ### Try the included sample repo
 ```bash
+# First, initialize the sample repo as a git repository (one-time setup)
+./setup_sample_repo.sh
+
+# Then scan it
 python -m src.cli sample_repo
 ```
 
