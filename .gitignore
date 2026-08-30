@@ -24,3 +24,6 @@ build/
 .idea/
 *.log
 /tmp/
+
+# Allow sample_repo .env files (test fixtures)
+!sample_repo/**/.env
