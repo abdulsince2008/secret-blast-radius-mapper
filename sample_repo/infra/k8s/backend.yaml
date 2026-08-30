@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backend-secrets
+  namespace: production
+type: Opaque
+data:
+  database-url: cG9zdGdyZXNxbDovL3VzZXI6c3VwZXJzZWNyZXRwYXNzd29yZDEyM0Bsb2NhbGhvc3Q6NTQzMi9teWFwcA==
+  aws-access-key-id: QUtJQUlPU0ZPRE5ON0VYQU1QTEU=
+  aws-secret-access-key: d0phbHJYVXRuRkVNSS9LN01ERU5HL2JQeFJmaUNZRVhBTVBMRUtFWT0=
+  jwt-secret: bXktc3VwZXItc2VjcmV0LWp3dC1rZXktdGhhdC1pcy12ZXJ5LWxvbmctYW5kLXJhbmRvbQ==
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: production
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: myapp/backend:latest
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: database-url
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: aws-access-key-id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: aws-secret-access-key
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: jwt-secret
+        - name: REDIS_URL
+          value: "redis://:redispassword123@redis:6379"
+        envFrom:
+        - secretRef:
+            name: backend-secrets

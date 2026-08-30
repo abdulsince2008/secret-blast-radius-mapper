@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    environment:
+      - DATABASE_URL=postgresql://user:supersecretpassword123@db:5432/myapp
+      - AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+      - AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_URL=redis://:redispassword123@redis:6379
+    depends_on:
+      - db
+      - redis
+    secrets:
+      - github_token
+
+  frontend:
+    build: ./frontend
+    environment:
+      - REACT_APP_API_URL=https://api.example.com
+      - REACT_APP_AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+      - REACT_APP_STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_PASSWORD=supersecretpassword123
+      - POSTGRES_USER=user
+      - POSTGRES_DB=myapp
+
+  redis:
+    image: redis:7
+    command: --requirepass redispassword123
+
+secrets:
+  github_token:
+    external: true
