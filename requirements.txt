@@ -1,0 +1,4 @@
+gitpython==3.1.43
+networkx==3.3
+pyyaml==6.0.1
+rich==13.7.1
